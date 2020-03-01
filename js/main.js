@@ -1,7 +1,7 @@
 /* WATS 3020 Browser Game project */
 /* Build a tic tac toe game for two players. */
 
-// TODO: declare a global variable named 'game` - it will reference the instance of the current game
+// global variable named 'game` - it will reference the instance of the current game
 let game;
 
 class Player {
@@ -13,8 +13,8 @@ class Player {
 // Tic Tac Toe Game Class
 class TicTacToe {
 	constructor() {
-		let player1 = new Player(heart);
-		let player2 = new Player(start);
+		this.player1 = new Player('heart');
+		this.player2 = new Player('star');
 
 		this.currentPlayer = null;
 		this.gameStatus = null;
@@ -56,8 +56,10 @@ class TicTacToe {
 	// This `checkForWinner()` method is provided for you, but you must fill in
 	// the event dispatch lines that cause the end game screens to show.
 	checkForWinner() {
+		console.log('Check for a winner was Called!');
 		for (let condition of this.winStates) {
-			let winningCondition = true;
+            let winningCondition = true;
+            
 			for (let position of condition) {
 				if (this.gameState[position[0]][position[1]] != this.currentPlayer.token) {
 					winningCondition = false;
@@ -73,17 +75,20 @@ class TicTacToe {
 				// dispatch it.
 
 				let winEvent = new Event('win');
-				document.dispatchEvent(winEvent);
-
+                document.dispatchEvent(winEvent);
+                
 				return true; // Return a value to stop processing the additional move count check.
 			}
 		}
-		this.moveCount++;
-		console.log(`Reviewed move ${this.moveCount}.`);
+        this.moveCount++;
+        
+        console.log(`Reviewed move ${this.moveCount}.`);
+        
 		if (this.moveCount >= 9) {
-			console.log(`This game is a draw at ${this.moveCount} moves.`);
-			this.gameStatus = 'draw';
 
+            console.log(`This game is a draw at ${this.moveCount} moves.`);
+            
+			this.gameStatus = 'draw';
 			let drawEvent = new Event('draw');
 			document.dispatchEvent(drawEvent);
 		}
@@ -100,7 +105,7 @@ class TicTacToe {
 		let tile_y = event.target.getAttribute('data-y');
 
 		this.gameState[tile_x][tile_y] = game.currentPlayer.token;
-		event.target.setAttribute('class', 'tile played fas fa-${this.currentPlayer.token}');
+		event.target.setAttribute('class', `tile played fas fa-${this.currentPlayer.token}`);
 	}
 	switchPlayer() {
 		// This method handles switching between players after each move.
@@ -114,15 +119,13 @@ class TicTacToe {
 			this.currentPlayer = this.player1;
 		}
 
-		this.currentPlayerToken.setAttribute('class', 'fas fa-${this.currentPlayer.token}');
+		this.currentPlayerToken.setAttribute('class', `fas fa-${this.currentPlayer.token}`);
 	}
 	setUpTileListeners() {
 		// This method sets up event listeners for tiles. It is called when we
 		// start a new game. It must find all the tiles and apply event listeners
 		// to them. The event listener that gets called is the handleMove().
-
-		tileElements = document.querySelectorAll('.tile');
-
+		let tileElements = document.querySelectorAll('.tile');
 		for (let tile of tileElements) {
 			tile.addEventListener('click', handleMove);
 		}
@@ -131,7 +134,7 @@ class TicTacToe {
 		// This method displays the end game screen for a Win and the token that won.
 
 		this.winScreen.setAttribute('class', 'show');
-		this.winnerToken.setAttribute('class', 'fas fa-${this.currentPlayer.token}');
+		this.winnerToken.setAttribute('class', `fas fa-${this.winner.token}`);
 	}
 
 	showDrawScreen() {
@@ -142,29 +145,25 @@ class TicTacToe {
 	setUpBoard() {
 		this.gameboard.innerHTML = '';
 
-		// We must draw the game board by using a loop to create rows with
-		// tiles in them. We want to create the same structure as we see in the
-		// index.html file.
-
-		for (let i = 0; i > 0; i++) {
+		for (let i = 0; i < 3; i++) {
 			let newRow = document.createElement('div');
 			newRow.setAttribute('class', 'row');
-			for (let j = 0; j > 3; j++) {
+
+			for (let j = 0; j < 3; j++) {
 				let newCol = document.createElement('div');
 				newCol.setAttribute('class', 'col-xs-3');
 
 				let newTile = document.createElement('span');
-				newTile.setAttribute('class', 'tile fas fa-question-sign');
-
+				newTile.setAttribute('class', 'tile fas fa-question');
 				newTile.setAttribute('data-x', i);
 				newTile.setAttribute('data-y', j);
 
-				newCol.appendChild('newTile');
-				newRow.appendChild('newCol');
-			} //second `for` loop should end here.
+				newCol.appendChild(newTile);
+				newRow.appendChild(newCol);
+			}
 
 			this.gameboard.appendChild(newRow);
-		} //first `for` loop should end here.
+		}
 
 		this.setUpTileListeners(); // Called to add event listeners to the `.tile` elements.
 	}
@@ -183,26 +182,27 @@ class TicTacToe {
 		this.setUpBoard();
 		this.initializeMovePrompt();
 	}
-} // End of the Tic Tac Toe Class definition.
+}
 
-document.addEventListener('DOMContentLoaded', function(event) {
+document.addEventListener('DOMContentLoaded', (event) => {
+	console.log('Loaded DOM Success!');
 	let startButton = document.querySelector('#start-button');
 
-	startButton.addEventListener('click', function(event) {
+	startButton.addEventListener('click', (event) => {
 		game = new TicTacToe();
 		game.start();
-	}); // End of startButton event listener.
-}); //End of the "DOMContentLoaded" event listener here.
+	});
+});
 
-document.addEventListener('win', function(event) {
+document.addEventListener('win', (event) => {
 	console.log('win');
 	game.showWinScreen();
-}); // End of the "win" event listener.
+});
 
-document.addEventListener('draw', function(event) {
+document.addEventListener('draw', (event) => {
 	console.log('draw');
 	game.showDrawScreen();
-}); // End of the "draw" event listener.
+});
 
 // External function for event listeners provided for you.
 function handleMove(event) {
